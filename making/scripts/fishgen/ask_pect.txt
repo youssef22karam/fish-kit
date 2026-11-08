@@ -1,0 +1,12 @@
+You are helping build a 3D {FISH} from this photograph. Its pectoral fin will be cut out of the photo as a separate flapping sheet, so I need its exact outline.
+
+The attached image is a part of the photo of the fish seen exactly from its LEFT side (the snout points LEFT). A grid is drawn in centimetres of the model's coordinates: bright yellow vertical lines every 1 cm are x (labelled "x.."; x INCREASES toward the snout, i.e. to the LEFT), dark yellow lines every 0.5 cm. Bright cyan horizontal lines every 1 cm are y (labelled "y.."; y increases UPWARD), dark cyan every 0.5 cm. The image covers x {X0} to {X1} and y {Y0} to {Y1}. Read positions from the lines to about 0.1 cm.
+
+Find the pectoral fin on the near (left) side of the fish: the paired fin just behind the gill cover, on the lower half of the flank. Do not confuse it with the pelvic fins under the belly, the dorsal fins on the back, or the gill cover edge.
+
+Answer, in model centimetres:
+1. pectoral: the outline of the whole pectoral fin as ONE closed polygon of 20-40 points in order around it, following the fin membrane and fin-ray tips closely (include the semi-transparent membrane out to the tips; do NOT include the scaled body skin around it; where the fin lies over the body, trace the fin's own edge).
+2. base: the base of the fin where it attaches to the body, as 2 points [upper end, lower end].
+3. found: false if no pectoral fin is visible.
+
+Reply with ONLY one JSON object (no markdown fences) with keys pectoral, base, found. Points are [x, y] in centimetres.

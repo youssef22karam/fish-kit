@@ -1,0 +1,53 @@
+#!/bin/bash
+# 魚の素材写真（真横、ヒレを広げた版と消した版）を Codex に撮らせる。
+# Codex には作らせるだけで、保存させない（保存しようとすると、シェルが使えずに別の手を使い、ペイントが開くことがある）。
+# 作った画像は recover_refs.py が Codex の generated_images から refs/fish/ へ写す。
+# 使い方: bash scripts/fishgen/gen_refs.sh [種類 ...]（省略で mebaru kasago）。同時に動かすのは JOBS（省略で 3）まで
+CODEX=${CODEX:-$(ls -t "$(cygpath -u "$LOCALAPPDATA")"/OpenAI/Codex/bin/*/codex.exe | head -1)}
+ROOT="$(cd "$(dirname "$0")/../.." && (pwd -W 2>/dev/null || pwd))"
+OUT="$ROOT/refs/fish"
+LOG="$ROOT/scripts/fishgen/logs"
+mkdir -p "$LOG"
+COMMON="Photorealistic museum-grade scientific photograph, 16:9 landscape. The whole fish is shown, nothing cropped, centered, filling about 85% of the image width, with every fin fully spread and clearly separated from the body. Uniform plain dark charcoal-gray studio background (#2f2f30) with no gradient, no shadow, no reflection, no props, no text. The mouth is fully CLOSED (lips together, jaws shut) and the gill cover lies flat and closed. Soft even studio lighting, razor-sharp detail of scales and fin rays, natural colours of a live fish. Unretouched real photograph, not an illustration."
+declare -A P
+P[mebaru]="A single adult Japanese black rockfish, kuromebaru (Sebastes ventricosus), about 22 cm, in perfect lateral side view facing LEFT. Dark grey-brown back fading to bronze-grey sides with faint darker vertical bars, very large eyes, spiny dorsal fin, truncate tail. $COMMON"
+P[kasago]="A single adult marbled rockfish, kasago (Sebastiscus marmoratus), about 22 cm, as caught among the rocks of a shallow Japanese harbour, in perfect lateral side view facing LEFT. Large spiny head, broad pectoral fins, spiny dorsal fin, rounded tail. Natural colours: dark brown to chocolate-brown body with a slight reddish tint, irregularly marbled with pale beige and cream blotches and small white spots, fins brown with pale spots and bands. The body is NOT bright red, pink or orange. $COMMON"
+P[saba]="A single adult chub mackerel, masaba (Scomber japonicus), about 35 cm, in perfect lateral side view facing LEFT. Spindle-shaped body, blue-green back with dark wavy tiger-like stripes, silver belly, two well separated dorsal fins, small finlets behind the second dorsal and anal fins, deeply forked tail. $COMMON"
+P[aji]="A single adult Japanese jack mackerel, maaji (Trachurus japonicus), about 25 cm, in perfect lateral side view facing LEFT. Silvery body with greenish-olive back, the row of bony scutes (zeigo) along the curved lateral line to the tail, small black spot on the edge of the gill cover, large eye, two dorsal fins, forked tail. $COMMON"
+P[tachiuo]="A single adult largehead hairtail, tachiuo (Trichiurus japonicus), about 100 cm, in perfect lateral side view facing LEFT, body held perfectly straight. Long ribbon-like bright metallic silver body tapering to a thin whip tail, long continuous translucent dorsal fin along the whole back, large mouth with fangs, big yellowish eye, no tail fin and no pelvic fins. $COMMON"
+P[sawara]="A single adult Japanese Spanish mackerel, sawara (Scomberomorus niphonius), about 80 cm, in perfect lateral side view facing LEFT. Long slender torpedo body, blue-grey back with rows of small dark grey spots along the sides, silver belly, pointed head with large mouth, first dorsal fin low and spiny, second dorsal and anal fins followed by small finlets, deeply forked tail. $COMMON"
+P[kamasu]="A single adult Japanese barracuda as sold in Japan as honkamasu (Sphyraena pinguis), about 35 cm, in perfect lateral side view facing LEFT. Slender cylindrical body, long pointed head with the lower jaw projecting beyond the upper, two widely separated dorsal fins, forked tail. Natural colours: grey-brown to olive-bronze back, bright silvery sides with a faint golden sheen, white belly, yellowish-grey fins and tail. The body is NOT red or orange. $COMMON"
+P[buri]="A single adult Japanese amberjack, buri (Seriola quinqueradiata), about 80 cm, in perfect lateral side view facing LEFT. Streamlined torpedo body, blue-green metallic back, silver-white belly, a yellow longitudinal band from the eye to the tail, forked yellowish tail. $COMMON"
+P[hiramasa]="A single adult yellowtail amberjack, hiramasa (Seriola lalandi), about 90 cm, in perfect lateral side view facing LEFT. Elongated, slightly compressed streamlined body, dark blue-green back, silver-white belly, a bright yellow longitudinal band from the snout through the eye to the tail, pectoral fin about as long as the pelvic fin, forked yellow tail. $COMMON"
+P[magochi]="A single adult bartail flathead, magochi (Platycephalus sp.), about 45 cm, in perfect lateral side view facing LEFT. Long low body with a broad flattened head, mottled sandy brown back with dark spots, pale belly, large mouth with protruding lower jaw, two dorsal fins, large fan-like pectoral fins, rounded-truncate tail with dark bars. $COMMON"
+P[kurodai]="A single adult blackhead seabream, kurodai (Acanthopagrus schlegelii), about 40 cm, in perfect lateral side view facing LEFT. Deep oval laterally compressed body, dark grey-black silvery body with faint vertical bands, steep forehead, thick lips, spiny dorsal fin, forked tail. $COMMON"
+P[madai]="A single adult red seabream, madai (Pagrus major), about 45 cm, in perfect lateral side view facing LEFT. Deep oval laterally compressed body, pinkish-red body with tiny scattered cobalt-blue spots, silvery belly, steep forehead, spiny dorsal fin, forked tail with a dark edge. $COMMON"
+P[katakuchi]="A single adult Japanese anchovy, katakuchiiwashi (Engraulis japonicus), about 13 cm, in perfect lateral side view facing LEFT. Slender cylindrical body, dark blue-green back, bright silver sides and belly, large eye, short blunt snout overhanging a very long lower jaw line reaching far behind the eye, single small dorsal fin at mid-body, forked tail. $COMMON"
+P[kihada]="A single adult yellowfin tuna, kihada (Thunnus albacares), about 100 cm, in perfect lateral side view facing LEFT. Fusiform torpedo body, deepest at mid-body, conical pointed head, small mouth. Natural colours: dark metallic navy-blue back, a golden-yellow longitudinal band along the upper side from the eye to the tail, silvery-white lower sides and belly crossed by about 20 broken, nearly vertical rows of pale spots. Long sickle-shaped bright yellow second dorsal fin and anal fin, bright yellow finlets edged with black, long slender pectoral fin reaching to below the second dorsal fin, short spiny first dorsal fin, crescent-shaped (lunate) dark tail. $COMMON"
+P[isaki]="A single fully grown ADULT chicken grunt, isaki (Parapristipoma trilineatum), a large mature fish about 40 cm, in perfect lateral side view facing LEFT. Adult colouration: the body is uniformly olive-brown to dark greyish-olive with a faint bronze sheen, slightly paler silvery-grey toward the belly. The three pale longitudinal stripes of juveniles have COMPLETELY FADED: there are NO visible stripes or bands on the body. Spindle-shaped, slightly compressed body, small head with a small mouth, one long continuous dorsal fin with a spiny front part and a soft rear part, forked tail. Fins dusky olive-brown. $COMMON"
+P[onagagure]="A single adult largescale blackfish, onagagure / kuromejina (Girella leonina), about 45 cm, in perfect lateral side view facing LEFT. Oval, laterally compressed body, uniformly dark bluish-black to charcoal body with a faint metallic sheen, the rear edge of the gill cover clearly black, small mouth with a small rounded snout, long continuous dorsal fin, large deeply forked tail with long pointed lobes. The body is NOT spotted. ${COMMON//dark charcoal-gray studio background (#2f2f30)/medium neutral gray studio background (#77777a, clearly lighter than the black fish)}"
+P[kuchibuto]="A single adult opaleye, kuchibuto-gure / mejina (Girella punctata), about 40 cm, in perfect lateral side view facing LEFT. Deep oval, laterally compressed body, dark greenish-black to dark olive-grey body, each scale with a small dark spot forming fine rows of dots along the sides, the edge of the gill cover NOT black, thick lips on a small blunt mouth, long continuous dorsal fin, moderately forked tail with rounded lobes (less forked than the largescale blackfish). $COMMON"
+P[shibudai]="A single adult star snapper, shibudai / fuedai (Lutjanus stellatus), about 40 cm, in perfect lateral side view facing LEFT. Snapper-shaped deep body with a pointed head and a large mouth, reddish-brown to dull rose-bronze back fading to pinkish-silver sides with faint yellowish longitudinal lines, one distinct small white spot on the upper back below the junction of the spiny and soft dorsal fin, yellowish fins, slightly forked to truncate tail. $COMMON"
+EDIT="Use your image generation/editing tool to edit the attached image. Remove ALL of the fish's fins: every dorsal fin, the tail (caudal) fin, the anal fin, the pectoral fins, the pelvic fins. Where a fin stuck out beyond the body, replace it with the same plain background colour as the rest of the image (keep the background EXACTLY the same colour and brightness as in the attached image; do not make it darker or lighter). Where the pectoral fin lay over the flank, fill that area with the fish's own skin and scales, continuing the surrounding pattern, colours and lighting naturally. The body should end at a clean narrow caudal peduncle. Keep everything else identical: exactly the same framing, image size and aspect ratio, fish position and size, head, mouth, eye, body outline, colours and lighting. Do not run any commands or scripts and do not try to save or open the file; just generate the edited image."
+IDS=("$@"); [ ${#IDS[@]} -eq 0 ] && IDS=(mebaru kasago)
+JOBS=${JOBS:-3}
+for k in "${IDS[@]}"; do
+  while [ "$(jobs -rp | wc -l)" -ge "$JOBS" ]; do sleep 5; done
+  (
+    if [ ! -f "$OUT/$k.png" ]; then
+      "$CODEX" -c model_reasoning_effort=low -c approval_policy=never exec --skip-git-repo-check -s workspace-write -C "$ROOT" \
+        "Use your image generation tool to create this image. Do not run any commands or scripts and do not try to save or open the file; just generate it. Prompt: ${P[$k]}" < /dev/null > "$LOG/ref_${k}.log" 2>&1
+      echo "$k ref exit=$?"
+      python "$ROOT/scripts/fishgen/recover_refs.py"
+    fi
+    if [ -f "$OUT/$k.png" ] && [ ! -f "$OUT/${k}_nofins.png" ]; then
+      "$CODEX" -c model_reasoning_effort=low -c approval_policy=never exec --skip-git-repo-check -s workspace-write -C "$ROOT" \
+        "$EDIT" -i "$OUT/$k.png" < /dev/null > "$LOG/nofins_${k}.log" 2>&1
+      echo "$k nofins exit=$?"
+      python "$ROOT/scripts/fishgen/recover_refs.py"
+    fi
+  ) &
+done
+wait
+ls -la "$OUT"
+echo ALLDONE

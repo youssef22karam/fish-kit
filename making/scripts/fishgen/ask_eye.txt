@@ -1,0 +1,5 @@
+The attached image is the head of a {FISH} photographed exactly from its LEFT side (the snout points LEFT). A grid is drawn in centimetres of the model's coordinates: bright yellow vertical lines every 1 cm are x (labelled "x.."; x INCREASES toward the snout, i.e. to the LEFT), dark yellow lines every 0.5 cm. Bright cyan horizontal lines every 1 cm are y (labelled "y.."; y increases UPWARD), dark cyan every 0.5 cm. The image covers x {X0} to {X1} and y {Y0} to {Y1}.
+
+The eye will be replaced by a round 3D eyeball textured with this photo, so I need the circle of the WHOLE visible eyeball: the outer edge of the coloured iris ring (where the iris meets the skin or the clear eye membrane around it), not just the black pupil. Read it to about 0.05 cm.
+
+Reply with ONLY one JSON object (no markdown fences): {"center": [x, y], "radius": r, "pupil_center": [x, y], "pupil_radius": r} in centimetres.

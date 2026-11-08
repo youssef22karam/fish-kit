@@ -1,0 +1,17 @@
+You are helping rig a 3D {FISH}, about {LEN} cm long, whose skin is this photograph. The gill covers will swing open when it breathes, and the mouth will open by dropping the lower jaw and pushing the upper jaw forward. I need the exact outlines of the moving parts.
+
+Image 1: the head of the fish photographed exactly from its LEFT side. The snout points LEFT. A grid is drawn in centimetres of the model's coordinates: bright yellow vertical lines every 1 cm are x (labelled "x.."; x INCREASES toward the snout, i.e. to the LEFT), dark yellow lines every 0.5 cm. Bright cyan horizontal lines every 1 cm are y (labelled "y.."; y increases UPWARD), dark cyan every 0.5 cm. The image covers x {X0} to {X1} and y {Y0} to {Y1}. Read positions from the lines to about 0.1 cm.
+
+Image 2: an EXAMPLE on a different fish (a sea bass): the gill cover is exactly the area inside the red outline. Note how far it reaches: forward to the curved front margin of the preopercle (just behind and below the eye, where the scaled cheek ends), back to the free rear edge (the tip of the opercular flap, the rearmost point), up to the top of the head behind the eye, and down under the head where it narrows forward along the throat. Be careful not to get the extent wrong: do not stop at the first visible line inside the cover, and do not include the pectoral fin base or the body behind the gill slit.
+
+Answer, in model centimetres read from Image 1:
+1. gill_cover: the whole gill cover that swings open (preopercle + opercle + subopercle + interopercle), as ONE closed polygon of 24-40 points in order around it. Its front side is the hinge (the preopercle front margin), its back side is the free edge of the gill slit.
+2. lower_lip: the line where the lower lip meets the upper jaw (the closed mouth seam), from the mouth corner at the back to the chin tip at the front, 5-8 points.
+3. under: the underside outline of the lower jaw, from the throat a little behind the jaw joint forward to the chin tip, 6-8 points (it is the lower boundary of the part that drops when the mouth opens).
+4. jaw_joint: the point the lower jaw rotates around (the quadrate-articular joint), usually a little behind and below the mouth corner.
+5. upper_jaw: the visible upper jaw bones (premaxilla + maxilla) as ONE closed polygon of 10-20 points: the band along the upper lip from the snout tip back to the rear end of the maxilla at the mouth corner.
+6. upper_pivot: the point at the top front of the snout around which the upper jaw swings forward/down.
+7. upper_protrusion_deg: how many degrees the upper jaw of this species swings forward/down when the mouth is wide open (very protrusible jaws like sea breams ~25-35, mackerels and jacks ~15-25, barracuda, hairtail and flathead which have fixed jaws ~3-8).
+8. mouth_closed: true if the mouth in the photograph is fully closed.
+
+Reply with ONLY one JSON object (no markdown fences) with keys gill_cover, lower_lip, under, jaw_joint, upper_jaw, upper_pivot, upper_protrusion_deg, mouth_closed. Points are [x, y] in centimetres.
